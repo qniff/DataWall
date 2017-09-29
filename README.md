@@ -1,4 +1,4 @@
-## DataWall 2017 Backend
+## DataWall 2017 Testing
 
 ### Project setup
 1. Make sure you clone the project in your ```src``` folder in your ````GOPATH````. If you don't , the project won't be 
