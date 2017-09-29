@@ -2,7 +2,7 @@ package cassandra
 
 import (
 	"sync"
-	"Data_Wall_2017/API/config"
+	"DataWall/api/config"
 	"github.com/gocql/gocql"
 	log "github.com/sirupsen/logrus"
 )

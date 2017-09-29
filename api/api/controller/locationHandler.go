@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"Data_Wall_2017/API/cassandra"
+	"DataWall/api/cassandra"
 	"encoding/json"
 	"fmt"
 	"net/http"
