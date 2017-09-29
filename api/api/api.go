@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"Data_Wall_2017/API/config"
-	"Data_Wall_2017/API/api/controller"
+	"DataWall/API/config"
+	"DataWall/API/api/controller"
 )
 
 // Start serving the api.

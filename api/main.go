@@ -1,9 +1,9 @@
 package main
 
 import (
-	"Data_Wall_2017/api/cassandra"
+	"DataWall/api/cassandra"
 	log "github.com/sirupsen/logrus"
-	"Data_Wall_2017/api/api"
+	"DataWall/api/api"
 )
 
 // Questionable file, future tbd.
