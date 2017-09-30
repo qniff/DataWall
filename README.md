@@ -6,9 +6,27 @@ able to link the different packages properly.
 If you don't know where your ```GOPATH``` is, 
 open a terminal and run ```go env``` and search for ```GOPATH```.
 
-1. Now install all dependencies by going to the root of the repository and running ```go get .```.
-1. Make sure you have a cassandra database running and that you know the **IP** and the **Keyspace**
-1. Now define your settings in the ```settings/settings.json``` file by adjusting the following values:
+2. Now install all dependencies by going to the root of the repository and running ```go get .```.
+3. Make sure you have a cassandra database running.
+4. Create a keyspace in cassandra.
+```
+~ cqlsh
+> CREATE KEYSPACE data
+  WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 1};
+```
+5. Create a table to store the data in
+```
+> USE data;
+> CREATE TABLE locations(
+    loc_x float,
+    loc_y float,
+    loc_z int,
+    user_hash text,
+    createdAt timestamp,
+    PRIMARY KEY(user_hash, createdAt)
+  );
+```
+6. Now define your settings in the ```settings/settings.json``` file by adjusting the following values:
 ```js
 {
   "IpAddress": "127.0.0.1",   // The IP address of your cassandra database
