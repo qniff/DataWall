@@ -13,6 +13,11 @@ func RunTests() {
 	routineStressTest()
 }
 
+
+/**
+ *  NOT WRITING COMMENTS HERE AS THIS CODE WILL BE REMOVED IN FUTURE
+ */
+
 const (
 	gophers = 20
 	entries = 1000000

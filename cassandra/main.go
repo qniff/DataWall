@@ -45,8 +45,17 @@ func GetDevices(limit int) []Device {
  */
 func InsertDevices(devices []Device) {
 	for _, device := range devices {
+		// Log for debugging start time of insert
+		log.WithFields(log.Fields{
+			"Start time": time.Now(),
+		}).Debug("Start inserting list of devices into DB")
 		// Create new Goroutine to execute insert method.
 		go insert(device)
+
+		// Log for debugging end time of insert
+		log.WithFields(log.Fields{
+			"End time": time.Now(),
+		}).Debug("Finished inserting list of devices into DB")
 	}
 }
 
