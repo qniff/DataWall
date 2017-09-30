@@ -21,8 +21,9 @@ var token string
 func main() {
 	fmt.Println("Application started...")
 
-	logging = config.Get().Logging
-	token = config.Get().Token
+	cfg := *config.Get()
+	logging = cfg.Logging
+	token = cfg.Token
 
 	// Start the function call loop
 	doEvery(interval, getDataFromApi)

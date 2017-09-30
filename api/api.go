@@ -12,7 +12,8 @@ import (
 func main() {
 	controller.RegisterEndPoints()
 
-	log.Printf("API running at: %s:%d\n\n", config.Get().IpAddress, config.Get().Port)
+	cfg := *config.Get()
+	log.Printf("API running at: %s:%d\n\n", cfg.IpAddress, cfg.ApiPort)
 
-	http.ListenAndServe(fmt.Sprint(":", config.Get().Port), nil)
+	http.ListenAndServe(fmt.Sprint(":", cfg.ApiPort), nil)
 }

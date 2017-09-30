@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"encoding/json"
 	"os"
+	"path/filepath"
 )
 
 // Struct to store all global variables.
-type configuration struct {
+type Configuration struct {
 	IpAddress string
 	Keyspace  string
 	ApiPort   int
@@ -16,13 +17,14 @@ type configuration struct {
 	Token     string
 }
 
-var conf *configuration
+var conf *Configuration
 var once sync.Once
 
 // Return the configuration.
-func Get() *configuration {
+func Get() *Configuration {
 	once.Do(func() {
-		file, err := os.Open("config/config.json")
+		absPath, _ := filepath.Abs("../config/config.json")
+		file, err := os.Open(absPath)
 		defer file.Close()
 		if err != nil {
 			fmt.Println(err.Error())

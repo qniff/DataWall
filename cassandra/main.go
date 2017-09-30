@@ -26,7 +26,7 @@ func GetDevices(limit int) []Device {
 			CreatedAt: m["createdat"].(time.Time),
 			X:         m["loc_x"].(float32),
 			Y:         m["loc_y"].(float32),
-			Z:         m["loc_z"].(int),
+			Z:         m["loc_z"].(int8),
 		})
 		m = map[string]interface{}{}
 	}
