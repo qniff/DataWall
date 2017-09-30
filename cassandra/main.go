@@ -1,9 +1,10 @@
 package cassandra
 
 import (
-	"time"
-	"fmt"
-	"log"
+	"time" // Time property for device struct
+	"fmt"  // Formatting query string
+
+	log "github.com/sirupsen/logrus" // Logging errors
 )
 
 /** GetData
@@ -44,7 +45,7 @@ func GetDevices(limit int) []Device {
  */
 func InsertDevices(devices []Device) {
 	for _, device := range devices {
-		// Create new Goroutine while calling insert function.
+		// Create new Goroutine to execute insert method.
 		go insert(device)
 	}
 }
@@ -55,8 +56,9 @@ func InsertDevices(devices []Device) {
  */
 func insert(device Device) {
 	// Insert device struct into database
-	if err := session().Query(`INSERT INTO locations (loc_x, loc_y, loc_z, user_hash, createdat) VALUES (?, ?, ?, ?, ?)`, device.X, device.Y, device.Z, device.Hash, time.Now()).Exec(); err != nil {
-		//
-		log.Fatal(err)
+	if queryErr := session().Query(`INSERT INTO locations (loc_x, loc_y, loc_z, user_hash, createdat) VALUES (?, ?, ?, ?, ?)`, device.X, device.Y, device.Z, device.Hash, time.Now()).Exec(); err != nil {
+		log.WithFields(log.Fields{
+			"Error": queryErr,
+		}).Fatal("Failed inserting record into database! ")
 	}
 }
