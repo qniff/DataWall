@@ -9,7 +9,9 @@ import (
 	log "github.com/sirupsen/logrus" // Logging errors
 )
 
-// Struct to store all global variables.
+/**
+ * Struct for global application configuration
+ */
 type Configuration struct {
 	IpAddress string // IP addresses of cassandra database
 	Keyspace  string // Keyspace (DB name) of cassandra database
@@ -35,8 +37,12 @@ func Get() *Configuration {
 			"path": absPath,
 		})
 		contextLogger.Info("Retrieving and setting configuration from file...")
+
+		// Open & close file of given path
 		file, fileErr := os.Open(absPath)
 		defer file.Close()
+
+		// Handling possible errors
 		if fileErr != nil {
 			log.WithFields(log.Fields{
 				"Error": fileErr.Error(),

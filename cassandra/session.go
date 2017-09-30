@@ -12,7 +12,6 @@ import (
 var _session *gocql.Session
 var once sync.Once
 
-
 /** createSession
  & Serves to only call createSession func only once otherwise referred to already set global _session variable.
  */
@@ -29,18 +28,22 @@ func session() *gocql.Session {
  & Instantiate new cassandra database session. Sets predeclared global _session variable.
  */
 func createSession() {
-	var err error
+	var sessionErr error
 
+	// Retrieve configuration for DB IP and Keyspace.
 	cfg := *config.Get()
-	// Connect to the database.
+	// Connect to cassandra database cluster and databas keyspace (DB name).
 	cluster := gocql.NewCluster(cfg.IpAddress)
 	cluster.Keyspace = cfg.Keyspace
 
-	// Create the _session.
-	_session, err = cluster.CreateSession()
-
-	// Check for errors.
-	if err != nil {
-		panic(err)
+	// Set global session variable
+	_session, sessionErr = cluster.CreateSession()
+	// Handling possible create session error
+	if sessionErr != nil {
+		// Logging & entering Panic state.
+		log.WithFields(log.Fields{
+			"Error": sessionErr.Error(),
+		}).Panic("Failed to create Cassandra DB session!")
+		// TODO Recover from panic?
 	}
 }
