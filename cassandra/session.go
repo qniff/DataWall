@@ -2,35 +2,34 @@ package cassandra
 
 import (
 	"sync"
-	"DataWall/api/config"
 	"github.com/gocql/gocql"
 	log "github.com/sirupsen/logrus"
+	"DataWall/config"
 )
 
-var session *gocql.Session
+var _session *gocql.Session
 var once sync.Once
 
-func GetSession() *gocql.Session {
+func session() *gocql.Session {
 
 	once.Do(func() {
 		log.Info("Creating new cassandra instance")
 		createSession()
 	})
-	return session
+	return _session
 }
 
-// Create a new session and set the global variable.
+// Create a new _session and set the global variable.
 func createSession() {
 	var err error
-	log.Info("Retrieving database configuration")
-	var cfg *config.Configuration = config.Get()
 
+	cfg := *config.Get()
 	// Connect to the database.
-	cluster := gocql.NewCluster(cfg.Ip_addresses)
+	cluster := gocql.NewCluster(cfg.IpAddress)
 	cluster.Keyspace = cfg.Keyspace
 
-	// Create the session.
-	session, err = cluster.CreateSession()
+	// Create the _session.
+	_session, err = cluster.CreateSession()
 
 	// Check for errors.
 	if err != nil {

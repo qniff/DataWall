@@ -5,74 +5,60 @@ import (
 	"fmt"
 	"time"
 	"io/ioutil"
-	"net/http"
 
 	"golang.org/x/oauth2"
-	"DataWall/data-gatherer/config"
+	"log"
+	"DataWall/cassandra"
+	"DataWall/config"
 )
 
-type Device struct {
-	X        float64 `json:"x"`
-	Y        float64 `json:"y"`
-	Z        int     `json:"z"`
-	UserType int     `json:"userType"`
-	Hash     string  `json:"hash"`
-}
+const devicesEndpointUrl string = "https://api.fhict.nl/location/devices"
+const interval time.Duration = 20000 * time.Millisecond
 
-type TokenSource struct {
-	AccessToken string
-}
-
-func (t *TokenSource) Token() (*oauth2.Token, error) {
-	token := &oauth2.Token{
-		AccessToken: t.AccessToken,
-	}
-	return token, nil
-}
-
-func doEvery(d time.Duration, f func(time.Time)) {
-	for x := range time.Tick(d) {
-		f(x)
-	}
-}
-
-func serve(w http.ResponseWriter, h *http.Request) {
-
-	tokenSource := &TokenSource{
-		AccessToken: config.Get().Token,
-	}
-	resp, _ := oauth2.NewClient(oauth2.NoContext, tokenSource).Get(config.Get().Url)
-	body, _ := ioutil.ReadAll(resp.Body)
-
-	fmt.Fprintf(w, string(body))
-}
-
-func getInfo(t time.Time) {
-	tokenSource := &TokenSource{
-		AccessToken: config.Get().Token,
-	}
-
-	oauthClient := oauth2.NewClient(oauth2.NoContext, tokenSource)
-	resp, err := oauthClient.Get(config.Get().Url)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer resp.Body.Close()
-
-	body, _ := ioutil.ReadAll(resp.Body)
-
-	jsondata := string(body)
-
-	var devices []Device // stores json in struct
-
-	err = json.Unmarshal([]byte(jsondata), &devices)
-
-	fmt.Printf("%+v", devices)
-}
+var logging bool
+var token string
 
 func main() {
-	http.HandleFunc("/", serve)
-	http.ListenAndServe(":8000", nil)
+	fmt.Println("Application started...")
 
-	doEvery(20000*time.Millisecond, getInfo)
+	logging = config.Get().Logging
+	token = config.Get().Token
+
+	// Start the function call loop
+	doEvery(interval, getDataFromApi)
+}
+
+func doEvery(interval time.Duration, repeatFunction func(time.Time)) {
+	for currentTime := range time.Tick(interval) {
+		repeatFunction(currentTime)
+	}
+}
+
+func getDataFromApi(currentTime time.Time) {
+	if logging {
+		fmt.Println("Start:", currentTime)
+	}
+
+	// Get a response from the Fontys API.
+	tokenSource := &TokenSource{
+		AccessToken: token,
+	}
+	resp, _ := oauth2.NewClient(oauth2.NoContext, tokenSource).Get(devicesEndpointUrl)
+	body, _ := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	jsonData := string(body)
+
+	// Convert the JSON to a struct array.
+	var devices []cassandra.Device
+	err := json.Unmarshal([]byte(jsonData), &devices)
+	if err != nil {
+		log.Panic("Could not convert json data to struct. Data from Fontys API:", jsonData)
+	}
+
+	// Store the data in the database.
+	cassandra.InsertDevices(devices)
+
+	if logging {
+		fmt.Println("End:", time.Now())
+	}
 }

@@ -4,13 +4,11 @@ import (
 	"fmt"
 	"time"
 	"log"
-	"github.com/gocql/gocql"
 )
 
-var Session *gocql.Session
 
 func RunTests() {
-	Session = GetSession()
+	_session = session()
 
 	routineStressTest()
 }
@@ -26,7 +24,7 @@ func concurrentStressTest(){
 	fmt.Println("StartTime: %v", time.Now())
 	for i := 0; i < entries; i++ {
 		//fmt.Println("inserting")
-		if err := Session.Query("INSERT INTO locations (loc_x, loc_y, loc_z, user_hash, createdAt) VALUES (?, 33421, 33, 'oh cmon', ?);", float32(i), time.Now()).Exec(); err != nil {
+		if err := _session.Query("INSERT INTO locations (loc_x, loc_y, loc_z, user_hash, createdAt) VALUES (?, 33421, 33, 'oh cmon', ?);", float32(i), time.Now()).Exec(); err != nil {
 			log.Fatal(err)
 		}
 	}
@@ -46,7 +44,7 @@ func gopher(gopher_id int) {
 	fmt.Printf("Gopher Id: %v \t|| StartTime: %v\n",gopher_id, time.Now())
 
 	for i := 0; i < entries; i++ {
-		if err := Session.Query("INSERT INTO locations (loc_x, loc_y, loc_z, user_hash, createdAt) VALUES (?, 33421, 33, 'oh cmon', ?);", float32(i), time.Now()).Exec(); err != nil {
+		if err := _session.Query("INSERT INTO locations (loc_x, loc_y, loc_z, user_hash, createdAt) VALUES (?, 33421, 33, 'oh cmon', ?);", float32(i), time.Now()).Exec(); err != nil {
 			log.Fatal(err)
 		}
 	}
@@ -56,7 +54,7 @@ func gopher(gopher_id int) {
 func printAllTest(){
 	var user_hash float32
 
-	iter := Session.Query(`SELECT loc_x FROM locations`).Iter()
+	iter := _session.Query(`SELECT loc_x FROM locations`).Iter()
 	for iter.Scan(&user_hash) {
 		fmt.Println("Result: ", user_hash)
 	}

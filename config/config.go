@@ -2,21 +2,25 @@ package config
 
 import (
 	"sync"
+	"fmt"
 	"encoding/json"
 	"os"
-	"fmt"
 )
 
-type Configuration struct {
-	Url   string
-	Token string
+// Struct to store all global variables.
+type configuration struct {
+	IpAddress string
+	Keyspace  string
+	ApiPort   int
+	Logging   bool
+	Token     string
 }
 
-var conf *Configuration
+var conf *configuration
 var once sync.Once
 
 // Return the configuration.
-func Get() *Configuration {
+func Get() *configuration {
 	once.Do(func() {
 		file, err := os.Open("config/config.json")
 		defer file.Close()
