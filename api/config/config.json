@@ -1,5 +1,5 @@
 {
-  "Ip_addresses": "129.168.31.131",
+  "Ip_addresses": ["129.168.31.131"],
   "Keyspace": "data",
   "Port": 8081
 }
