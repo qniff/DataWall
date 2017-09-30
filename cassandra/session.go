@@ -2,16 +2,22 @@ package cassandra
 
 import (
 	"sync"
-	"github.com/gocql/gocql"
-	log "github.com/sirupsen/logrus"
+
 	"DataWall/config"
+
+	log "github.com/sirupsen/logrus" // Logging library
+	"github.com/gocql/gocql"         // Cassandra database driver
 )
 
 var _session *gocql.Session
 var once sync.Once
 
-func session() *gocql.Session {
 
+/** createSession
+ & Serves to only call createSession func only once otherwise referred to already set global _session variable.
+ */
+func session() *gocql.Session {
+	// Block executes only once
 	once.Do(func() {
 		log.Info("Creating new cassandra instance")
 		createSession()
@@ -19,7 +25,9 @@ func session() *gocql.Session {
 	return _session
 }
 
-// Create a new _session and set the global variable.
+/** createSession
+ & Instantiate new cassandra database session. Sets predeclared global _session variable.
+ */
 func createSession() {
 	var err error
 

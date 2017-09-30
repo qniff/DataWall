@@ -19,13 +19,14 @@ type Configuration struct {
 }
 
 var conf *Configuration // Predeclared global configuration struct, accessible by Get() func returning conf pointer.
+var once sync.Once
 
 /** Config.Get
  * Opens json config file. Decodes content to json into var conf of Configuration struct.
  * @return Configuration pointer
  */
 func Get() *Configuration {
-	sync.Once.Do(func() {
+	once.Do(func() {
 		// Set file path to be serialized
 		absPath, _ := filepath.Abs("../config/config.json")
 
