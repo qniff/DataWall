@@ -2,6 +2,7 @@ package config
 
 import (
 	"testing"
+	"regexp"
 
 	"github.com/stretchr/testify/assert"
 )

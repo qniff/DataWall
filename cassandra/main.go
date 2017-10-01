@@ -7,17 +7,18 @@ import (
 	log "github.com/sirupsen/logrus" // Logging errors
 )
 
-/** GetData
+/** GetDevices
  * Requests devices location from database with given maximum record limit.
  * @param limit: Amount of rows you want to limit your request to. Must be positive.
  * @return List of device locations by struct Locations.
  */
-func GetDevices(limit int) []Device {
+func GetDevices(limit uint) []Device {
 	var locList []Device          // Predeclared list of Device struct.
 	m := map[string]interface{}{} // What is this?
 
 	// Formatting database query. Selecting fields user_hash, createdAt, loc_x, loc_y, loc_y with maximum records given by limit variable.
 	// TODO Protect SQL injection
+	// TODO Test if limit uint is positive
 	selectLocationsQuery := fmt.Sprintf(
 		"%s %d",
 		"SELECT user_hash, createdat, loc_x, loc_y, loc_z FROM locations LIMIT ",
