@@ -1,6 +1,6 @@
-package Test
+package test
 
-import(
+import (
 	"testing"
 
 	"DataWall/config"
@@ -11,9 +11,9 @@ import(
 func TestGetIpAddressNotNil(t *testing.T) {
 	//_assert := assert.New(t)
 	conf := config.Get()
-	if conf != nil{
+	if conf != nil {
 		//_assert.True(t, true)
-	} else{
+	} else {
 		//assert.True(conf.IpAddress, false)
 	}
 }

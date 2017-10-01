@@ -65,7 +65,9 @@ func InsertDevices(devices []Device) {
  */
 func insert(device Device) {
 	// Insert device struct into database
-	if queryErr := session().Query(`INSERT INTO locations (loc_x, loc_y, loc_z, user_hash, createdat) VALUES (?, ?, ?, ?, ?)`, device.X, device.Y, device.Z, device.Hash, time.Now()).Exec(); err != nil {
+	if queryErr := session().Query(`INSERT INTO locations (loc_x, loc_y, loc_z, user_hash, createdat) VALUES \
+										(?, ?, ?, ?, ?)`, device.X, device.Y, device.Z, device.Hash, time.Now()).Exec();
+		queryErr != nil {
 		log.WithFields(log.Fields{
 			"Error": queryErr,
 		}).Fatal("Failed inserting record into database! ")

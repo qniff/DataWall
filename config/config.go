@@ -30,7 +30,7 @@ var once sync.Once
 func Get() *Configuration {
 	once.Do(func() {
 		// Set file path to be serialized
-		absPath, _ := filepath.Abs("../config/config.json")
+		absPath, _ := filepath.Abs("../DataWall/config/config.json")
 
 		// All logs by contextLogger now include file path
 		contextLogger := log.WithFields(log.Fields{

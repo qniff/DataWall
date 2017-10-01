@@ -38,5 +38,5 @@ open a terminal and run ```go env``` and search for ```GOPATH```.
 
 ```
 7. Now add the following run configurations to your Gogland:
-![Api settings](https://i.imgur.com/DhKzvWl.png)
-![Data Gatherer settings](https://i.imgur.com/vgBt5JP.png)
+![Api settings](https://i.imgur.com/B9JvX96.png)
+![Data Gatherer settings](https://i.imgur.com/omP6KVj.png)
