@@ -20,6 +20,8 @@ type Configuration struct {
 	Token     string // Auth token from Fontys API
 }
 
+const configPath = "../DataWall/config/config.json"
+
 var conf *Configuration // Predeclared global configuration struct, accessible by Get() func returning conf pointer.
 var once sync.Once
 
@@ -30,7 +32,7 @@ var once sync.Once
 func Get() *Configuration {
 	once.Do(func() {
 		// Set file path to be serialized
-		absPath, _ := filepath.Abs("../DataWall/config/config.json")
+		absPath, _ := filepath.Abs(configPath)
 
 		// All logs by contextLogger now include file path
 		contextLogger := log.WithFields(log.Fields{
@@ -46,7 +48,7 @@ func Get() *Configuration {
 		if fileErr != nil {
 			log.WithFields(log.Fields{
 				"Error": fileErr.Error(),
-			}).Fatal("Failed opening file! ")
+			}).Fatal("Failed opening file!")
 		}
 
 		// Decoding (serializing) JSON content of file to Configuration struct
@@ -54,5 +56,14 @@ func Get() *Configuration {
 		jsonParser.Decode(&conf)
 		contextLogger.Info("Configuration initialized!")
 	})
+
 	return conf
+}
+
+func fileExists() bool {
+	absPath, _ := filepath.Abs(configPath)
+	if _, err := os.Stat(absPath); os.IsNotExist(err) {
+		return false
+	}
+	return true
 }
