@@ -56,7 +56,7 @@ func getDataFromApi(currentTime time.Time) {
 		AccessToken: config.Get().Token,
 	}
 
-	// TODO DEPRECATED! NO!
+	// TODO DEPRECATED? NO!
 	resp, _ := oauth2.NewClient(oauth2.NoContext, tokenSource).Get(devicesEndpointUrl)
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
