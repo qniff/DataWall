@@ -1,20 +1,18 @@
 package main
 
 import (
-	"time"
-	"io/ioutil"
 	"encoding/json"
+	"io/ioutil"
+	"time"
 
 	"DataWall/cassandra"
 	"DataWall/config"
 
-	"golang.org/x/oauth2"            // Authentication library
 	log "github.com/sirupsen/logrus" // Logging library
+	"golang.org/x/oauth2"            // Authentication library
 )
 
-//TODO Move to JSON config file! And build endpoint string down to several domain & protocol levels!
-const devicesEndpointUrl string = "https://api.fhict.nl/location/devices" // Fontys endpoint url
-const interval time.Duration = 20000 * time.Millisecond                   // Time with 20 seconds interval
+const interval time.Duration = 20000 * time.Millisecond // Time with 20 seconds interval
 
 //TODO
 /** Data-gatherer main
@@ -28,10 +26,10 @@ func main() {
 }
 
 /** do Every //TODO Func name not clear enough
- * Timer to repeat func every given amount of time. //TODO Does this have to be a seperate func? Can it not be recursive?
- * @param interval in whole seconds.
- 8 @param function name to repeat every interval tick
- */
+* Timer to repeat func every given amount of time. //TODO Does this have to be a seperate func? Can it not be recursive?
+* @param interval in whole seconds.
+8 @param function name to repeat every interval tick
+*/
 func doEvery(interval time.Duration, repeatFunction func(time.Time)) {
 	for currentTime := range time.Tick(interval) {
 		repeatFunction(currentTime)
@@ -47,8 +45,12 @@ func getDataFromApi(currentTime time.Time) {
 		"Start time": time.Now(),
 	}).Debug("Retrieving data from Fontys API")
 
+	// Retrieve configuration for Fontys Devices API url
+	cfg := *config.Get()
+	devicesEndpointUrl := cfg.ApiProtocol + cfg.ApiDomain + cfg.ApiDevicesPath // Fontys endpoint url
+
 	// TODO Should this variable be predefined?
-	var devices []cassandra.Device
+	var devices [].Device
 
 	// TODO Comment incomplete, elaborate!
 	// Set tokenSource for OAuth?
@@ -74,7 +76,7 @@ func getDataFromApi(currentTime time.Time) {
 	}
 
 	// Send devices list to insert func to be inserted into the DB.
-	cassandra.InsertDevices(devices)
+	.InsertDevices(devices)
 
 	log.WithFields(log.Fields{
 		"End time": time.Now(),
