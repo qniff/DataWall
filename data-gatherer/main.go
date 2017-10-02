@@ -50,24 +50,21 @@ func getDataFromApi(currentTime time.Time) {
 	devicesEndpointUrl := cfg.ApiProtocol + cfg.ApiDomain + cfg.ApiDevicesPath // Fontys endpoint url
 
 	// TODO Should this variable be predefined?
-	var devices [].Device
+	var devices []cassandra.Device
 
-	// TODO Comment incomplete, elaborate!
-	// Set tokenSource for OAuth?
+	// Retrieve Token from Config and set in proper struct
 	tokenSource := &TokenSource{
 		AccessToken: config.Get().Token,
 	}
 
 	// TODO DEPRECATED? NO!
+	// Create oauth2 client with inserted token to proceed GET request and read the response
 	resp, _ := oauth2.NewClient(oauth2.NoContext, tokenSource).Get(devicesEndpointUrl)
 	body, _ := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	// TODO Why not directly use body string in the unmarshal?
-	jsonData := string(body)
-
 	// Serialize JSON response to device struct.
-	err := json.Unmarshal([]byte(jsonData), &devices)
+	err := json.Unmarshal([]byte(string(body)), &devices)
 	if err != nil {
 		// TODO Handle error more gracefully!
 		log.WithFields(log.Fields{
@@ -76,7 +73,7 @@ func getDataFromApi(currentTime time.Time) {
 	}
 
 	// Send devices list to insert func to be inserted into the DB.
-	.InsertDevices(devices)
+	cassandra.InsertDevices(devices)
 
 	log.WithFields(log.Fields{
 		"End time": time.Now(),
